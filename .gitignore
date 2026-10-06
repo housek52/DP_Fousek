@@ -1,0 +1,14 @@
+# LaTeX generované soubory
+*.aux
+*.fdb_latexmk
+*.fls
+*.loa
+*.lof
+*.log
+*.lol
+*.lot
+*.out
+*.pdf
+*.synctex.gz
+*.toa
+*.toc
