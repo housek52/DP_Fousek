@@ -24,7 +24,7 @@ jobs:
       - name: Příprava PDF k nahrání
         run: |
           mkdir output
-          cp sablona-prace.pdf output/
+          cp sablona-prace.pdf output/DP_Fousek.pdf
 
       # 4. Nahraje obsah složky do nové větve s názvem 'pdf'
       - name: Nahrání do větve 'pdf'
