@@ -1,0 +1,36 @@
+name: Kompilace LaTeXu a nahrání PDF
+
+on:
+  push:
+    branches:
+      - main # Zkontroluj, jestli se tvá hlavní větev jmenuje 'main' (případně změň na 'master')
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Stáhne tvoje zdrojové kódy
+      - name: Checkout repozitáře
+        uses: actions/checkout@v4
+
+      # 2. Zkompiluje LaTeX pomocí TeX Live
+      - name: Kompilace PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: sablona-prace.tex
+          # latexmk je výchozí, takže bibliografie i obsah by se měly vygenerovat správně
+
+      # 3. Vytvoří složku a přesune do ní zkompilované PDF
+      - name: Příprava PDF k nahrání
+        run: |
+          mkdir output
+          cp sablona-prace.pdf output/
+
+      # 4. Nahraje obsah složky do nové větve s názvem 'pdf'
+      - name: Nahrání do větve 'pdf'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          publish_branch: pdf
+          force_orphan: true # Udržuje větev čistou - maže historii a nechává jen nejnovější PDF
