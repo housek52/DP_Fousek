@@ -8,38 +8,47 @@
 
 \section{Metody detekce kolizí pohybu}
 
-\subsection{Vzdálenost koncových bodů}
+    \subsection{Vzdálenost koncových bodů}
 
-\subsection{Vzdálenost koncových bodů s vektorem pohybu}
+    \subsection{Vzdálenost koncových bodů s vektorem pohybu}
 
-\subsection{Rozdělení prostoru na kvadráty}
-
+    \subsection{Rozdělení prostoru na kvadráty}
+    
 \newpage
 
 \section{Simulované prostředí}
     Důležitou částí semestrální práce je vytvoření simulovaného
-    prostředí pracoviště robotů.
+    prostředí pracoviště robotů. Jsou tři hlavní programy v kterých 
+    lze simulace vytvořit. %Program Scene Viewer, industrialPhysics
+    %a Unity 3D.
 
-    \subsection{Programy pro vytvoření simulace}
-        Jsou tři hlavní programy v kterých 
-        lze simulace vytvořit. Program Scene Viewer, industrialPhysics
-        a Unity 3D.
-
-        \subsubsection{Scene Viewer}
-            Program Scene Viewer je vytvořený přímo od firmy B\&R, tedy 
-            patří do jednoho kompletního řešení podporovaného přímo
-            vývojáři a nejlépe zdokumentovaným propojením s virtuálním
-            i reálným PLC od této firmy.
+    \subsubsection{Scene Viewer}
+        Program Scene Viewer je vytvořený přímo od firmy B\&R, tedy 
+        patří do jednoho kompletního řešení podporovaného přímo
+        vývojáři a nejlépe zdokumentovaným propojením s virtuálním
+        i reálným PLC od této firmy.
     
-            Největší výhodou je existence vytvořených modelů robotů,
-            takže není nutné zabývat se vytvářením vlastního 3D modelu. 
-            Simulátor komunikuje s PLC pomocí OPC UA, nebo alternativně
-            pomocí PVI.
+        Největší výhodou je existence vytvořených modelů robotů,
+        které přímo odpovídají modelům v Automation Studiu. Takže
+        není nutné zabývat se vytvářením vlastního 3D modelu. 
+        Simulátor komunikuje s PLC pomocí OPC UA, nebo alternativně
+        pomocí PVI.
 
-            Scene Viewer lze dostat zdarma na stránkách B\&R. Při prvním
-            spuštění je třeba vytvořit certifikát, který se uloží
-            na počítači.
+        Scene Viewer lze dostat zdarma na stránkách B\&R. Při prvním
+        spuštění je třeba vytvořit certifikát, který se uloží
+        na počítači.
 
     \subsubsection{industrialPhysics}
+        Pokročilý program, ve kterém lze vytvořit celé virtuální
+        pracoviště, je industrialPhysics od firmy machineering.
+        
+        Program lze snadno zařadit do již existujícího ekosystému firmy.
+        Umožňuje vkládat 3D modely, programování robotů, vývoj programů
+        pro PLC a následnou vizualizaci.
+        Pro komunikaci s PLC od B\&R je však nutné do programu
+        navíc doinstalovat plugin. Komunikaci pak zajišťuje OPC UA.
+
+        Jedná se o placený program, jehož cena je od 300 € měsíčně
+        (přibližně 7300 Kč), nebo 1200 € jednorázově (přibližně 29200 Kč).
 
     \subsubsection{Unity 3D}
