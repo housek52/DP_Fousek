@@ -4,19 +4,25 @@
 % před odevzdáním bude nejspíš nutno změnit
 % a hlavně před případným tiskem
 
-\chapter{Teoretická část studentské práce}
+%\chapter{Teoretická část studentské práce}
 
-\section{Metody detekce kolizí pohybu}
+\chapter{Metody detekce kolizí pohybu}
+    Pohyb dvou robotů ve stejném pracovním prostoru je náročný z důvodu,
+    že do sebe mohou narazit. Ve většině případů se tento problém řeší tím,
+    že se roboti umístí dost daleko od sebe, a tedy jejich pracovní oblasti
+    se neprotínají. Mohou však existovat důvody, proč je potřeba, aby roboti
+    byli ve stejném prostoru třeba z důvodu jejich kooperace nebo prostorové
+    náročnosti.
 
-    \subsection{Vzdálenost koncových bodů}
+    \section{Vzdálenost koncových bodů}
 
-    \subsection{Vzdálenost koncových bodů s vektorem pohybu}
+    \section{Vzdálenost koncových bodů s vektorem pohybu}
 
-    \subsection{Rozdělení prostoru na kvadráty}
+    \section{Rozdělení prostoru na kvadráty}
     
 \newpage
 
-\section{Simulované prostředí}
+\chapter{Simulované prostředí}
     Důležitou částí semestrální práce je vytvoření simulovaného
     prostředí pracoviště robotů. Jsou tři hlavní programy v kterých 
     lze simulace vytvořit. %Program Scene Viewer, industrialPhysics
@@ -52,3 +58,16 @@
         (přibližně 7300 Kč), nebo 1200 € jednorázově (přibližně 29200 Kč).
 
     \subsubsection{Unity 3D}
+        Velmi populární je herní engine Unity 3D, který lze využít pro 
+        simulaci robotických systémů od průmyslové linky až po autonomní 
+        řízení automobilů.
+
+        % našel jsem celý balíček za 1098 euro, ale jsou open-source varianty (základ)
+        Pro propojení slouží knihovny, jejichž základ je open-source. Existují
+        buď balíčky přímo pro jednotlivé výrobce PLC, jako je třeba Siemens, 
+        nebo pro univerzální propojení pomocí např. OPC UA a Modbus.
+
+        Pro osobní a nebo malé týmy je Unity 3D k dispozici zdarma. Pro využít
+        v průmyslu ve firmě je pak cena asi 383 € (přibližně 9300 Kč).
+    
+    \section{Vytvoření simulace}
