@@ -1,18 +1,25 @@
 \chapter*{Úvod}
 \phantomsection
 \addcontentsline{toc}{chapter}{Úvod}
+Projekt Deltabot vznikl v rámci projektu v soutěží FEKTTeams 2024. Na různých částech
+projektu pracoval čtyřčlenný tým, jejichž práce je popsána v jejich bakalářských pracích. 
 
-Tato práce navazuje na bakalářskou práci Řízení pohybu DeltaBotu. Bakalářská práce
-se zabývala zprovozněním robotického systému vlastní konstrukce pomocí PLC od firmy
-B\&R. V rámci této práce nejdřív bylo třeba projekt přepsat na jiné PLC a v novém
-prostředí, které již ve výchozím nastavení používá zabezpečené komunikace.
+Tato práce navazuje na bakalářskou práci Řízení pohybu DeltaBotu, která se zabývala
+zprovozněním robotického systému vlastní konstrukce pomocí PLC od firmy B\&R.
+Zároveň využívá analytické modely výpočtů polohy jednotlivých pozic motorů na ose
+a koncového bodu robotu. Těmito modely se zabývala práce Analytické modelování delta
+robota.
+
+% Kdyžtak dopsat
+Práce se zabývá problematikou kolizí robotů, jejichž pracovní oblasti se protínají.
+Výsledkem práce by mělo být jak kolize zjistit a vyvarovat se jim. Existují tři hlavní
+myšlenky, jak by se mohly kolize robotů řešit.
+
+V rámci práce byl stávající PLC projekt převeden na novější verzi, kde je od základu
+nastavena bezpečná komunikace na síti.
+
+ 
 % no toto tam možná ani nebude protože to vlastne ke své diplomce nepotřebuji XD
-
-
-% tohle bude chtít eště péči
-Práce se zabývá problematikou kolizí robotů ve stejné pracovní oblasti, a jak
-jim předcházet. Jsou hlavní tři myšlenky, jak se roboti ve společném prostou budou
-pohybovat. Zde je řešeno jejich jejich porovnání a základ pro následnou implementaci.
 
 Jelikož pro řešení kolizí je potřeba dva roboty, které fyzicky nebyly k dispozici,
 vše je řešeno přes simulaci. Podstatnou částí semestrální práce proto je vytvoření
