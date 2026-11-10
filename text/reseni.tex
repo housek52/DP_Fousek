@@ -15,19 +15,34 @@
     náročnosti.
 
     Rešerše je vytvořena pomocí Matlabu. Základ pro výpočet polohy robota vytvořil
-    Ondřej Dušek. Jeho skript však bylo potřeba upravit tak, aby se v prostoru vykreslili
-    dva modely, aby je bylo možné posunou a otočit a také byla přidána funkce měnit pozici
-    robotu bez nutnosti opakovaně spouštět skript.
+    Ondřej Dušek \cite{dusek}. Jeho skript však bylo potřeba upravit tak, aby se v prostoru
+    vykreslili dva modely, aby je bylo možné posunou a otočit a také byla přidána funkce 
+    měnit pozici robotu bez nutnosti opakovaně spouštět skript.
 
     \section{Vzdálenost koncových bodů}
 
     \section{Vzdálenost koncových bodů s vektorem pohybu}
 
     \section{Rozdělení prostoru na kvadráty}
-    
-\newpage
+
 
 \chapter{Příprava projektu na novém PLC}
+    V průběhu práce rovněž proběhla výměna PLC na vytvořeném Deltabotu v rámci bakalářských
+    prací. Z toho důvodu bylo výhodné přepsat program v nové verzi vývojového prostředí 
+    Automation Studio 6. V rámci konfigurace je tedy nutné vybrat nové PLC X20EM0613.
+    
+    První změnou, které nové PLC přináší, je rychlejší takt procesoru. Při vybrání časování
+    podle podle rozhraní EPL/X2X - IF3 dostaneme poloviční čas systémového tiku, a proto si
+    můžeme dovolit dvakrát rychlejší vykonávání cyklických úloh. Nejrychlejší cyklická úloha
+    se tedy vykonává s periodou 2 $\mu s$.
+
+    % HMI template
+
+    % zabezpečení připojení
+
+    % Zmena systemova cesty k gcode pro simulaci
+
+    % Problem s verzí automation runtime a občané nenahrání programu
 
 \chapter{Simulované prostředí}
     Důležitou částí semestrální práce je vytvoření simulovaného
