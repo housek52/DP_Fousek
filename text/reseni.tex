@@ -20,10 +20,20 @@
     měnit pozici robotu bez nutnosti opakovaně spouštět skript.
 
     \section{Vzdálenost koncových bodů}
-
+        \begin{figure}[!ht]
+            \centering
+            \includegraphics[width=0.9\linewidth]{obrazky/graf_robota.pdf}
+            \caption{Vzdálenost koncových bodů}
+            \label{fig:vkb}
+        \end{figure}
     \section{Vzdálenost koncových bodů s vektorem pohybu}
 
     \section{Rozdělení prostoru na kvadráty}
+
+
+
+
+
 
 
 \chapter{Příprava projektu na novém PLC}
@@ -31,18 +41,81 @@
     prací. Z toho důvodu bylo výhodné přepsat program v nové verzi vývojového prostředí 
     Automation Studio 6. V rámci konfigurace je tedy nutné vybrat nové PLC X20EM0613.
     
+    % Základní změny v projektu v důsledku změny PLC
     První změnou, které nové PLC přináší, je rychlejší takt procesoru. Při vybrání časování
     podle podle rozhraní EPL/X2X - IF3 dostaneme poloviční čas systémového tiku, a proto si
     můžeme dovolit dvakrát rychlejší vykonávání cyklických úloh. Nejrychlejší cyklická úloha
     se tedy vykonává s periodou 2 $\mu s$.
 
+    \section{Nové HMI}
     % HMI template
+    Jednou výhodou nového Automation Studia 6 je možnost využití šablony při vytváření 
+    obrazovky na panel HMI. Díky tomu je již vytvořené rozložení stránek, které obsahuje 
+    hlavičku s logem, panel s tlačítky pro přepínání zobrazené stránky a samotný obsah 
+    jednotlivých stránek. Navíc obsahuje tlačítko pro změnu a přihlášení uživatele.
+    Pro účely funkčnosti, který odpovídá stavu popsanému v mé bakalářské práci, je 
+    dostačující pouze jedna stránka obrazovky. Potřebné prvky jsou numerické ukazatele
+    pro polohu x, y, z v prostoru a u, v, w pro polohu jednotlivých os, menu pro výběr 
+    pohybového programu a tlačítka a signalizace pro vykonávání pohybu.
+      
+    \begin{figure}[!ht]
+        \centering
+        \includegraphics[width=1\linewidth]{obrazky/HMI.png}
+        \caption{Nové HMI vytvořené pomocí šablony}
+        \label{fig:hmi}
+    \end{figure}
 
+    %Před tím než lze vidět obrazovku, je třeba se přihlásit. Pro přihlášení je použit
+    %uživatel \textbf{vut} a heslo \textbf{1234}. 
+    Pro~funkci je důležité menu pro výběr 
+    pohybového programu a tlačítka spuštění pohybu, reset chyb a tlačítko pro návrat 
+    do bezpečné polohy \ref{fig:hmi}. Pro návrat do bezpečné polohy je nutné zmáčknout 
+    tlačítko s ikonou prstu a následně spustit pohyb. Pro~pohyb podle vybraného programu
+    je nutné pak tlačítko s ikonou prstu manuálně deaktivovat. 
+
+    % nový firmware pro displej
+    Z důvodu použití nového HMI a prvků v něm bylo třeba nahrát nový firmware do displeje
+    reálného robota. Pro aktualizaci stačilo stáhnout obraz v Tools -> Upgrades -> Linux 
+    Images -> PPT 50. Soubory se daly na USB flash disk, který se přímo zapojí do displeje.
+    Na servisní obrazovce displeje se pak zvolí aktualizace firmwaru. 
+
+    \section{Zabezpečení komunikace}
     % zabezpečení připojení
+    Automation Studio 6 již ve výchozím nastavení používá zabezpečenou komunikaci. 
+    Pro vytvořený panel HMI a i pro mappCockpit je potřeba tedy přihlášení, nebo povolit
+    anonymní přihlášení. Proto byl vytvořen uživatel \textbf{vut} s heslem \textbf{1234}. 
+    Přihlášení k vlastnímu vytvořenému HMI lze nastavit automaticky po spuštění. Pro 
+    ovládání přes mappCockpit je přihlášení nutné. Toto přihlášení se pak také používá 
+    při propojení virtuálního PLC a 3D simulace přes OPC UA.
 
+    \section{Obtíže VYMYSLET LEPŠÍ NÁZEV}
     % Zmena systemova cesty k gcode pro simulaci
+    Pro simulované PLC na počítači vznikla v rámci ochrany přístupu souborového systému
+    odlišnost ve způsobu čtení programů pohybu uložených na úložišti počítače. Dle 
+    nových pravidel nemůže virtuální PLC přímo přistupovat k souborům počítače. Programy
+    pohybu tedy musí být v umístění vzniklého virtuálního PLC.
+    Cesta uložených programů se pak řídí touto strukturou:
+    \begin{lstlisting}
+    <disk>:\<cesta_k_projektu_plc>\Temp\Simulation\...
+    \<název_konfigurace>\<použité_cpu>\USER
+    \end{lstlisting}
+    Pro můj projekt cesta vypadá takto:
+    \begin{lstlisting}
+    C:\projects\DeltaBot\PLC\Temp\Simulation\...
+    \X20EM0613\X20EM0613\USER
+    \end{lstlisting}
 
     % Problem s verzí automation runtime a občané nenahrání programu
+    Během nastavování programu PLC se objevil problém. Aktuální verze v době vytváření
+    projektu Automation Runtime 6.8 obsahuje chybu, díky které se po startu programu
+    správně nespustí pohybový model Deltabotu. Proto se musí použít starší verze 
+    Automation Runtime 6.7. O chybě v novější verzi vývojáři ví a v následující verzi 
+    má být opravena.
+
+
+
+
+
 
 \chapter{Simulované prostředí}
     Důležitou částí semestrální práce je vytvoření simulovaného

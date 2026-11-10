@@ -10,6 +10,7 @@
 *.out
 *.pdf
 !pdf/*.pdf
+!obrazky/*.pdf
 *.synctex.gz
 *.toa
 *.toc
