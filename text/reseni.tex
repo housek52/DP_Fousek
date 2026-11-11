@@ -18,14 +18,31 @@
     Ondřej Dušek \cite{dusek}. Jeho skript však bylo potřeba upravit tak, aby se v prostoru
     vykreslili dva modely, aby je bylo možné posunou a otočit a také byla přidána funkce 
     měnit pozici robotu bez nutnosti opakovaně spouštět skript.
+    
+    % řešit natočení robota vůči druhému
 
     \section{Vzdálenost koncových bodů}
+        První a myšlenkově nejjednodušší metoda je prosté sledování vzdálenosti koncových
+        bodů. Pohyb robotů je v tomto případě neomezený do doby, kdy se koncové body 
+        přiblíží pod dovolený práh.
+
+        % potencionální potíž tohoto řešení
+        Při určení prahu je důležité pamatovat nejen na velikost efektoru, ale i na 
+        jednotlivé spojnice pohyblivé osy. Díky tomu prostý práh nemusí být dostatečný. 
+
         \begin{figure}[!ht]
             \centering
-            \includegraphics[width=0.9\linewidth]{obrazky/graf_robota.pdf}
+            \includegraphics[width=1\linewidth]{obrazky/vkb_ok.pdf}
             \caption{Vzdálenost koncových bodů}
-            \label{fig:vkb}
+            \label{fig:vkb_ok}
         \end{figure}
+        \begin{figure}[!ht]
+            \centering
+            \includegraphics[width=1\linewidth]{obrazky/vkb_nok.pdf}
+            \caption{Vzdálenost koncových bodů}
+            \label{fig:vkb_nok}
+        \end{figure}
+
     \section{Vzdálenost koncových bodů s vektorem pohybu}
 
     \section{Rozdělení prostoru na kvadráty}
@@ -77,7 +94,13 @@
     Z důvodu použití nového HMI a prvků v něm bylo třeba nahrát nový firmware do displeje
     reálného robota. Pro aktualizaci stačilo stáhnout obraz v Tools -> Upgrades -> Linux 
     Images -> PPT 50. Soubory se daly na USB flash disk, který se přímo zapojí do displeje.
-    Na servisní obrazovce displeje se pak zvolí aktualizace firmwaru. 
+    Na servisní obrazovce displeje se pak zvolí aktualizace firmwaru.
+
+    % Toto smazat podle toho jak se to vyvine v budoucnu XD
+    Nové HMI rovněž ve výchozím nastavení používá protokol HTTPS. U HTTPS existují dvě
+    možnosti, certifikát s vlastním podpisem a s platná konfigurace SSL. Pro jednoduchost
+    a kompatibilitu s předchozím nastavením displeje je nastavení přepnuto na protokol
+    HTTP.  
 
     \section{Zabezpečení komunikace}
     % zabezpečení připojení
