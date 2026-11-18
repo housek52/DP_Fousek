@@ -20,15 +20,51 @@
     měnit pozici robotu bez nutnosti opakovaně spouštět skript.
     
     % řešit natočení robota vůči druhému
+    \section{Vzájemné postavení robotů}
+        Prvním problémem, který je potřeba adresovat, je vzájemné postavení deltabotů 
+        vedle sebe. Jelikož práce navazuje na předchozí znalosti, je využit pro tuto 
+        práci pro lepší představu stejný model robotického systému \cite{drga}.
+        
+        \begin{figure}[!ht]
+            \centering
+            \includegraphics[width=0.7\linewidth]{obrazky/pozice_botu.pdf}
+            \caption{Uspořádání deltabotů v prostoru}
+            \label{fig:boti_v_prostoru}
+        \end{figure}
+
+        Z konstrukce vyplývá, díky omezení pohybu použitých kloubů a konstrukce rámu 
+        jediná možná pozice těchto dvou robotů tak, aby mohli zasahovat do stejného
+        pracovního prostoru. Jeden robot musí být otočený o $180^\circ$. Při předpokladu, 
+        že budou roboti vůči sobě posunutí na ose x, tak osy na ležící na ose x budou 
+        směřovat od sebe (od středu uspořádaných robotů), jak lze vidět na obrázku
+        \ref{fig:boti_v_prostoru}.
+
 
     \section{Vzdálenost koncových bodů}
-        První a myšlenkově nejjednodušší metoda je prosté sledování vzdálenosti koncových
+        První a principiálně nejjednodušší metoda je prosté sledování vzdálenosti koncových
         bodů. Pohyb robotů je v tomto případě neomezený do doby, kdy se koncové body 
         přiblíží pod dovolený práh.
 
         % potencionální potíž tohoto řešení
         Při určení prahu je důležité pamatovat nejen na velikost efektoru, ale i na 
-        jednotlivé spojnice pohyblivé osy. Díky tomu prostý práh nemusí být dostatečný. 
+        jednotlivé spojnice pohyblivé osy.
+        % Nápad :D: podle rozdílu dx v záporných hodnotách určit povolenou minimální odchylku dy. Vznikne takový trojúhelník zakázané oblasti. 
+        Proto jednoduché sledování pouhé vzdálenosti není dostatečné, protože vzdálenost
+        koncových bodů může být dostatečná ale spojnice efektoru s pohyblivou osou se mohou
+        srazit. Možným řešením je sledovat také rozdíl koncových bodů v ose x, na které oba
+        roboti leží. Podle tohoto rozdílu se pak určí minimální rozdíl vzdálenosti v ose y.
+        Robota, který je brán jako hlavní při tomto výpočtu, bude robot 2 posunutý v 
+        kladném směru osy x. Díky tomu lze pro výpočet použít podmínku, zda je rozdíl
+        bodů na ose x větší než nula. Pokud ano, řídí se detekce pouze vzdáleností bodů.
+        Ilustračně to lze vidět na obrázku \ref{fig:limity}, na kterém je pohled na osu x 
+        a y.
+        
+        \begin{figure}[!ht]
+            \centering
+            \includegraphics[width=1\linewidth]{obrazky/limit.pdf}
+            \caption{Limity pro vzdálenost od koncového bodu robotu 2}
+            \label{fig:limity}
+        \end{figure}
 
         \begin{figure}[!ht]
             \centering
@@ -42,6 +78,8 @@
             \caption{Vzdálenost koncových bodů}
             \label{fig:vkb_nok}
         \end{figure}
+
+        \FloatBarrier
 
     \section{Vzdálenost koncových bodů s vektorem pohybu}
 
@@ -122,11 +160,11 @@
     <disk>:\<cesta_k_projektu_plc>\Temp\Simulation\...
     \<název_konfigurace>\<použité_cpu>\USER
     \end{lstlisting}
-    Pro můj projekt cesta vypadá takto:
-    \begin{lstlisting}
-    C:\projects\DeltaBot\PLC\Temp\Simulation\...
-    \X20EM0613\X20EM0613\USER
-    \end{lstlisting}
+%    Pro můj projekt cesta vypadá takto:        % Dát to tam??????
+%    \begin{lstlisting}
+%    C:\projects\DeltaBot\PLC\Temp\Simulation\...
+%    \X20EM0613\X20EM0613\USER
+%    \end{lstlisting}
 
     % Problem s verzí automation runtime a občané nenahrání programu
     Během nastavování programu PLC se objevil problém. Aktuální verze v době vytváření
