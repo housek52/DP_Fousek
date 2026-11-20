@@ -14,16 +14,30 @@
     byli ve stejném prostoru třeba z důvodu jejich kooperace nebo prostorové
     náročnosti.
 
-    Rešerše je vytvořena pomocí Matlabu. Základ pro výpočet polohy robota vytvořil
-    Ondřej Dušek \cite{dusek}. Jeho skript však bylo potřeba upravit tak, aby se v prostoru
-    vykreslili dva modely, aby je bylo možné posunou a otočit a také byla přidána funkce 
-    měnit pozici robotu bez nutnosti opakovaně spouštět skript.
+    Testování teorie je vytvořena pomocí Matlabu. Základ pro výpočet polohy robota vytvořil
+    Ondřej Dušek \cite{dusek}. Jeho práce se zabývala výpočtem přímé i inverzní kinematiky 
+    pro vytvořenou konstrukci robota. Tyto matematické výpočty jsou použity jako základ
+    vykreslení, ale skript bylo třeba upravit.
+
+    První nejvýraznější úpravou je možnost translace a rotace robota v prostoru. S touto
+    změnou souvisí i úprava toho aby opakované volání funkce nekreslilo dva různé obrázky,
+    ale pouze jeden. Díky těmto úpravám lze vykreslit dva roboty vedle sebe.
+
+    Vhodné pro uživatele bylo přidání ovládacích prvků ve vykreslení, aby se skript 
+    nespouštěl opakovaně a změna pozice robota se nehledala složitě v kódu. Proto
+    bylo třeba zabránit vykreslení nekorektní pozice. Původní skript pro vykreslení pouze
+    vracel varování o nekorektní pozici. Tohoto varování lze využít a zabránit nesmyslné
+    pozici robota.
+
+    Poslední úpravou pak je samotné zobrazování detekce vzniku kolizí robotů.
+
     
     % řešit natočení robota vůči druhému
     \section{Vzájemné postavení robotů}
-        Prvním problémem, který je potřeba adresovat, je vzájemné postavení deltabotů 
-        vedle sebe. Jelikož práce navazuje na předchozí znalosti, je využit pro tuto 
-        práci pro lepší představu stejný model robotického systému \cite{drga}.
+        Prvním problémem, nad kterým je potřeba uvažovat, je vzájemné postavení deltabotů 
+        vedle sebe. Jelikož práce navazuje na předchozí znalosti, je využit v této 
+        práci pro lepší představu použit stejný model robotického systému, který
+        navrhl Oliver Drga \cite{drga}, a ve výchozím skriptu byl již nastaven.
         
         \begin{figure}[!ht]
             \centering
@@ -39,6 +53,9 @@
         směřovat od sebe (od středu uspořádaných robotů), jak lze vidět na obrázku
         \ref{fig:boti_v_prostoru}.
 
+        Roboti musí být tedy v rozumné vzdálenosti od sebe. V práci je použit posun středu
+        robota o 400 mm, což zhruba odpovídá vzdálenosti 159 mm od konce pohyblivé osy.
+        % Podívat se na model Olivera zda je to dost pro konstrukci :)
 
     \section{Vzdálenost koncových bodů}
         První a principiálně nejjednodušší metoda je prosté sledování vzdálenosti koncových
