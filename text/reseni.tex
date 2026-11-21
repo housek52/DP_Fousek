@@ -68,14 +68,65 @@
         % Nápad :D: podle rozdílu dx v záporných hodnotách určit povolenou minimální odchylku dy. Vznikne takový trojúhelník zakázané oblasti. 
         Proto jednoduché sledování pouhé vzdálenosti není dostatečné, protože vzdálenost
         koncových bodů může být dostatečná ale spojnice efektoru s pohyblivou osou se mohou
-        srazit. Možným řešením je sledovat také rozdíl koncových bodů v ose x, na které oba
-        roboti leží. Podle tohoto rozdílu se pak určí minimální rozdíl vzdálenosti v ose y.
-        Robota, který je brán jako hlavní při tomto výpočtu, bude robot 2 posunutý v 
-        kladném směru osy x. Díky tomu lze pro výpočet použít podmínku, zda je rozdíl
-        bodů na ose x větší než nula. Pokud ano, řídí se detekce pouze vzdáleností bodů.
-        Ilustračně to lze vidět na obrázku \ref{fig:limity}, na kterém je pohled na osu x 
-        a y.
+        srazit. Možným řešením je vytvoření pomyslné elipsy okolo efektoru. Pokud jeden 
+        koncový bod bude ležet v jednom z ohnisek elipsy, lze vytvořit oblast tak, aby 
+        při zásahu druhým robotem do oblasti za koncovým bodem prvního robota se postupně
+        rozšiřovala povolená vzdálenost. Zároveň pokud se koncové body nedostanou za sebe,
+        mohou se k sobě přiblížit více.
         
+        Uvažujme, že je efektor deltabotu umístěn v počátku prostoru. Nejdříve je třeba
+        určit bezpečnou vzdálenost okolo efektoru. V modelu je délka od středu ke kraji
+        efektoru 50 mm, proto pro bezpečnou vzdálenost použijeme hodnotu 65mm, která je
+        o něco větší. Střed elipsy bude ležet na ose x ve vzdálenosti, kde končí konstrukce
+        robota, což je v modelu 240 mm. Poloosu x elipsy pak získáme součtem těchto dvou
+        hodnot. Poloosa y je rovněž nastavena na délku, kterou zabírá pohyblivá osa 
+        z pohledu ze shora tedy 240 mm.
+
+        Rovnice elipsy tedy bude
+        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 \qquad->\qquad \frac{(x-l_{osy})^2}{(l_{osy}+l_{ef})^2}+\frac{(y-0)^2}{l_{osy}^2}=1$$
+        
+        kde:
+        \begin{itemize}
+            \item $S_x$ - souřadnice x středu elipsy
+            \item $S_y$ - souřadnice y středu elipsy
+            \item $a$ - poloosa x elipsy
+            \item $b$ - poloosa y elipsy 
+            \item $l_{osy}$ - vzdálenost, kterou zabírá pohyblivá osa z pohledu ze shora
+            \item $l_{ef}$ - bezpečná vzdálenost od efektoru
+        \end{itemize}
+
+        Zároveň je potřeba pouze polovina elipsy. Protože se druhý deltabot do pozice za 
+        elipsou nemůže dostat, je důležitá polovina elipsy směrem do středu soustavy
+        robotů. Pro prostor za oříznutím lze určení korektní pozice pomocí přímky.
+        Z bodu, kde se elipsa ořízne, a jednoho předchozího bodu vypočítá rovnice přímky.
+        Pro ořez elipsy v polovině je třeba najít hodnotu souřadnice y, která je v
+        souřadnici x odpovídající středu elipsy. Z nalezeného bodu a jeho sousedního
+        bodu se určí směrnice přímky. Jelikož známe bod v polovině elipsy, od kterého
+        bude následovat přímka, a vypočítanou směrnici lze vypočítat offset přímky.
+        $$ a = \frac{\Delta y}{\Delta x} = \frac{By_e-By_{e-1}}{Bx_e-Bx_{e-1}} $$
+        $$ b = y - ax$$
+        kde:
+        \begin{itemize}
+            \item $a$ - směrnice
+            \item $b$ - offset
+            \item $By_e$ - souřadnice y bodu v polovině elipsy
+            \item $By_{e-1}$ - sousedící souřadnice y bodu v polovině elipsy
+            \item $Bx_e$ - souřadnice x bodu v polovině elipsy
+            \item $Bx_{e-1}$ - sousedící souřadnice x bodu v polovině elipsy
+        \end{itemize}
+
+        Určení korektní pozice robotů v této oblasti stačí sledovat, zda je rozdíl 
+        polohy y koncových bodů větší než výsledek rovnice přímky.
+
+        $$ |Y| > ax + b $$
+        kde:
+        \begin{itemize}
+            \item $Y$ - rozdíl polohy y koncových bodů
+            \item $a$ a $b$ - vypočítané parametry přímky
+        \end{itemize}
+
+        % doplnit řešení v ose z
+
         \begin{figure}[!ht]
             \centering
             \includegraphics[width=1\linewidth]{obrazky/limit.pdf}
