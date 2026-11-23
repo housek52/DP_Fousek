@@ -14,13 +14,13 @@
     byli ve stejném prostoru třeba z důvodu jejich kooperace nebo prostorové
     náročnosti.
 
-    Testování teorie je vytvořena pomocí Matlabu. Základ pro výpočet polohy robota vytvořil
+    Testování teorie je provedeno pomocí Matlabu. Základ pro výpočet polohy robota vytvořil
     Ondřej Dušek \cite{dusek}. Jeho práce se zabývala výpočtem přímé i inverzní kinematiky 
     pro vytvořenou konstrukci robota. Tyto matematické výpočty jsou použity jako základ
     vykreslení, ale skript bylo třeba upravit.
 
     První nejvýraznější úpravou je možnost translace a rotace robota v prostoru. S touto
-    změnou souvisí i úprava toho aby opakované volání funkce nekreslilo dva různé obrázky,
+    změnou souvisí i úprava toho, aby opakované volání funkce nekreslilo dva různé obrázky,
     ale pouze jeden. Díky těmto úpravám lze vykreslit dva roboty vedle sebe.
 
     Vhodné pro uživatele bylo přidání ovládacích prvků ve vykreslení, aby se skript 
@@ -46,11 +46,11 @@
             \label{fig:boti_v_prostoru}
         \end{figure}
 
-        Z konstrukce vyplývá, díky omezení pohybu použitých kloubů a konstrukce rámu 
+        Z konstrukce vyplývá, díky omezení pohybu použitých kloubů a konstrukce rámu, 
         jediná možná pozice těchto dvou robotů tak, aby mohli zasahovat do stejného
         pracovního prostoru. Jeden robot musí být otočený o $180^\circ$. Při předpokladu, 
-        že budou roboti vůči sobě posunutí na ose x, tak osy na ležící na ose x budou 
-        směřovat od sebe (od středu uspořádaných robotů), jak lze vidět na obrázku
+        že budou roboti vůči sobě posunutí na ose x, tak pohyblivé osy ležící na ose x 
+        budou směřovat od sebe (od středu uspořádaných robotů), jak lze vidět na obrázku
         \ref{fig:boti_v_prostoru}.
 
         Roboti musí být tedy v rozumné vzdálenosti od sebe. V práci je použit posun středu
@@ -67,7 +67,7 @@
         jednotlivé spojnice pohyblivé osy.
         % Nápad :D: podle rozdílu dx v záporných hodnotách určit povolenou minimální odchylku dy. Vznikne takový trojúhelník zakázané oblasti. 
         Proto jednoduché sledování pouhé vzdálenosti není dostatečné, protože vzdálenost
-        koncových bodů může být dostatečná ale spojnice efektoru s pohyblivou osou se mohou
+        koncových bodů může být dostatečná, ale spojnice efektoru s pohyblivou osou se mohou
         srazit. Možným řešením je vytvoření pomyslné elipsy okolo efektoru. Pokud jeden 
         koncový bod bude ležet v jednom z ohnisek elipsy, lze vytvořit oblast tak, aby 
         při zásahu druhým robotem do oblasti za koncovým bodem prvního robota se postupně
@@ -76,14 +76,17 @@
         
         Uvažujme, že je efektor deltabotu umístěn v počátku prostoru. Nejdříve je třeba
         určit bezpečnou vzdálenost okolo efektoru. V modelu je délka od středu ke kraji
-        efektoru 50 mm, proto pro bezpečnou vzdálenost použijeme hodnotu 65mm, která je
-        o něco větší. Střed elipsy bude ležet na ose x ve vzdálenosti, kde končí konstrukce
-        robota, což je v modelu 240 mm. Poloosu x elipsy pak získáme součtem těchto dvou
-        hodnot. Poloosa y je rovněž nastavena na délku, kterou zabírá pohyblivá osa 
-        z pohledu ze shora tedy 240 mm.
+        efektoru 50 mm, proto pro bezpečnou vzdálenost použijeme hodnotu 65 mm, která je
+        o něco větší. Střed elipsy bude ležet na ose x ve vzdálenosti $\frac{3}{4}$ délky
+        240 mm pohyblivé osy deltabota ve směru osy x. Poloosu x elipsy pak získáme součtem
+        těchto dvou hodnot. Poloosa y je nastavena podle délky vzdálenosti kraje konstrukce
+        od středu, ke které je přidána rezerva 40 mm, aby se zajistilo bezpečné vyhnutí 
+        spojnic pohyblivých os, tedy celkem 280 mm.
 
         Rovnice elipsy tedy bude
-        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 \qquad->\qquad \frac{(x-l_{osy})^2}{(l_{osy}+l_{ef})^2}+\frac{(y-0)^2}{l_{osy}^2}=1$$
+        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 
+        \qquad->\qquad 
+        \frac{(x- 0.75 \ l_{osy})^2}{(0.75 \ l_{osy}+l_{ef})^2}+\frac{(y-0)^2}{(l_{osy}+40)^2}=1$$
         
         kde:
         \begin{itemize}
@@ -91,49 +94,65 @@
             \item $S_y$ - souřadnice y středu elipsy
             \item $a$ - poloosa x elipsy
             \item $b$ - poloosa y elipsy 
-            \item $l_{osy}$ - vzdálenost, kterou zabírá pohyblivá osa z pohledu ze shora
+            \item $l_{osy}$ - délka osy, kterou zabírá z pohledu ze shora
             \item $l_{ef}$ - bezpečná vzdálenost od efektoru
         \end{itemize}
+        \hspace{1em}
 
-        Zároveň je potřeba pouze polovina elipsy. Protože se druhý deltabot do pozice za 
-        elipsou nemůže dostat, je důležitá polovina elipsy směrem do středu soustavy
-        robotů. Pro prostor za oříznutím lze určení korektní pozice pomocí přímky.
-        Z bodu, kde se elipsa ořízne, a jednoho předchozího bodu vypočítá rovnice přímky.
-        Pro ořez elipsy v polovině je třeba najít hodnotu souřadnice y, která je v
-        souřadnici x odpovídající středu elipsy. Z nalezeného bodu a jeho sousedního
-        bodu se určí směrnice přímky. Jelikož známe bod v polovině elipsy, od kterého
-        bude následovat přímka, a vypočítanou směrnici lze vypočítat offset přímky.
-        $$ a = \frac{\Delta y}{\Delta x} = \frac{By_e-By_{e-1}}{Bx_e-Bx_{e-1}} $$
-        $$ b = y - ax$$
-        kde:
-        \begin{itemize}
-            \item $a$ - směrnice
-            \item $b$ - offset
-            \item $By_e$ - souřadnice y bodu v polovině elipsy
-            \item $By_{e-1}$ - sousedící souřadnice y bodu v polovině elipsy
-            \item $Bx_e$ - souřadnice x bodu v polovině elipsy
-            \item $Bx_{e-1}$ - sousedící souřadnice x bodu v polovině elipsy
-        \end{itemize}
+        % uprav přímky nejsou potřeba, protože se deltabot za polovinu elipsy fyzicky nedostane
+        Důležitá je především polovina elipsy, která je blíže ke středu soustavy robotů.
+        Prostor za touto  polovinou je pro druhého deltabota rovněž nepřístupný.  
+        Pro prostor za oříznutím elipsy lze metodu zjednodušit pomocí přímky.
 
         Určení korektní pozice robotů v této oblasti stačí sledovat, zda je rozdíl 
         polohy y koncových bodů větší než výsledek rovnice přímky.
-
+        
         $$ |Y| > ax + b $$
         kde:
         \begin{itemize}
             \item $Y$ - rozdíl polohy y koncových bodů
             \item $a$ a $b$ - vypočítané parametry přímky
         \end{itemize}
+        \hspace{1em}
 
-        % doplnit řešení v ose z
+        Parametry přímky lze zjednodušeně určit tak, že z konce oříznuté elipsy pokračuje
+        přímka rovnoběžná s osou x. Alternativně lze přímka odvodit z krajních dvou bodů
+        elipsy. Z bodu, kde oříznutá elipsa končí, a jednoho předchozího bodu, se vypočítá 
+        směrnice přímky. Ze známého bodu konce elipsy, od kterého bude následovat přímka, 
+        a vypočítané směrnice lze vypočítat offset přímky.
+        $$ a = \frac{\Delta y}{\Delta x} = \frac{By_e-By_{e-1}}{Bx_e-Bx_{e-1}} $$
+        $$ b = y - ax$$
+        kde:
+        \begin{itemize}
+            \item $a$ - směrnice
+            \item $b$ - offset
+            \item $By_e$ - souřadnice y konce poloviny elipsy
+            \item $By_{e-1}$ - sousedící souřadnice y konce poloviny elipsy
+            \item $Bx_e$ - souřadnice x konce poloviny elipsy
+            \item $Bx_{e-1}$ - sousedící souřadnice x konce poloviny elipsy
+        \end{itemize}
+        \hspace{1em}
 
+
+        Výsledný prostor okolo efektoru v rovine xy lze vidět na obrázku 
+        \ref{fig:limity}, kde povolený prostor je zobrazen zeleně a zakázaný červeně.
+        
         \begin{figure}[!ht]
             \centering
-            \includegraphics[width=1\linewidth]{obrazky/limit.pdf}
+            \includegraphics[width=0.6\linewidth]{obrazky/limit.pdf}
             \caption{Limity pro vzdálenost od koncového bodu robotu 2}
             \label{fig:limity}
         \end{figure}
+        
+        % doplnit řešení v ose z
+        Velikost elipsy je zároveň ovlivněna pozicí ve směru osy z. Čím výše koncový bod je,
+        tím větší musí být bezpečná oblast okolo něj.
+        % dle výšky upravovat poloosu b elipsy
+        % posunutí elipsy po spojnici: těžiště jezdců -> epicentrum v koncovém bodě
 
+
+        \newpage
+        
         \begin{figure}[!ht]
             \centering
             \includegraphics[width=1\linewidth]{obrazky/vkb_ok.pdf}
@@ -166,9 +185,9 @@
     
     % Základní změny v projektu v důsledku změny PLC
     První změnou, které nové PLC přináší, je rychlejší takt procesoru. Při vybrání časování
-    podle podle rozhraní EPL/X2X - IF3 dostaneme poloviční čas systémového tiku, a proto si
+    podle rozhraní EPL/X2X - IF3 dostaneme poloviční čas systémového tiku, a proto si
     můžeme dovolit dvakrát rychlejší vykonávání cyklických úloh. Nejrychlejší cyklická úloha
-    se tedy vykonává s periodou 2 $\mu s$.
+    se tedy vykonává s periodou 2 ms.
 
     \section{Nové HMI}
     % HMI template
@@ -192,9 +211,10 @@
     %uživatel \textbf{vut} a heslo \textbf{1234}. 
     Pro~funkci je důležité menu pro výběr 
     pohybového programu a tlačítka spuštění pohybu, reset chyb a tlačítko pro návrat 
-    do bezpečné polohy \ref{fig:hmi}. Pro návrat do bezpečné polohy je nutné zmáčknout 
+    do bezpečné polohy. Pro návrat do bezpečné polohy je nutné zmáčknout 
     tlačítko s ikonou prstu a následně spustit pohyb. Pro~pohyb podle vybraného programu
-    je nutné pak tlačítko s ikonou prstu manuálně deaktivovat. 
+    je nutné pak tlačítko s ikonou prstu manuálně deaktivovat. Obrazovka HMI je vidět na 
+    obrázku \ref{fig:hmi}.
 
     % nový firmware pro displej
     Z důvodu použití nového HMI a prvků v něm bylo třeba nahrát nový firmware do displeje
@@ -204,7 +224,7 @@
 
     % Toto smazat podle toho jak se to vyvine v budoucnu XD
     Nové HMI rovněž ve výchozím nastavení používá protokol HTTPS. U HTTPS existují dvě
-    možnosti, certifikát s vlastním podpisem a s platná konfigurace SSL. Pro jednoduchost
+    možnosti, certifikát s vlastním podpisem a platná konfigurace SSL. Pro jednoduchost
     a kompatibilitu s předchozím nastavením displeje je nastavení přepnuto na protokol
     HTTP.  
 
@@ -291,7 +311,7 @@
         buď balíčky přímo pro jednotlivé výrobce PLC, jako je třeba Siemens, 
         nebo pro univerzální propojení pomocí např. OPC UA a Modbus.
 
-        Pro osobní a nebo malé týmy je Unity 3D k dispozici zdarma. Pro využít
+        Pro osobní a nebo malé týmy je Unity 3D k dispozici zdarma. Pro využití
         v průmyslu ve firmě je pak cena asi 383 € (přibližně 9300 Kč).
     
     \section{Vytvoření simulace}
