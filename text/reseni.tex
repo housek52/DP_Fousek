@@ -59,83 +59,78 @@
 
     \section{Vzdálenost koncových bodů}
         První a principiálně nejjednodušší metoda je prosté sledování vzdálenosti koncových
-        bodů. Pohyb robotů je v tomto případě neomezený do doby, kdy se koncové body 
-        přiblíží pod dovolený práh.
-
-        % potencionální potíž tohoto řešení
-        Při určení prahu je důležité pamatovat nejen na velikost efektoru, ale i na 
-        jednotlivé spojnice pohyblivé osy.
-        % Nápad :D: podle rozdílu dx v záporných hodnotách určit povolenou minimální odchylku dy. Vznikne takový trojúhelník zakázané oblasti. 
-        Proto jednoduché sledování pouhé vzdálenosti není dostatečné, protože vzdálenost
-        koncových bodů může být dostatečná, ale spojnice efektoru s pohyblivou osou se mohou
-        srazit. Možným řešením je vytvoření pomyslné elipsy okolo efektoru. Pokud jeden 
-        koncový bod bude ležet v jednom z ohnisek elipsy, lze vytvořit oblast tak, aby 
-        při zásahu druhým robotem do oblasti za koncovým bodem prvního robota se postupně
-        rozšiřovala povolená vzdálenost. Zároveň pokud se koncové body nedostanou za sebe,
-        mohou se k sobě přiblížit více.
+        bodů. Pohyb robotů je v tomto případě neomezený dokud se koncové nepřiblíží více
+        než je minimální povolená vzdálenost. 
         
-        Uvažujme, že je efektor deltabotu umístěn v počátku prostoru. Nejdříve je třeba
-        určit bezpečnou vzdálenost okolo efektoru. V modelu je délka od středu ke kraji
-        efektoru 50 mm, proto pro bezpečnou vzdálenost použijeme hodnotu 65 mm, která je
-        o něco větší. Střed elipsy bude ležet na ose x ve vzdálenosti $\frac{3}{4}$ délky
-        240 mm pohyblivé osy deltabota ve směru osy x. Poloosu x elipsy pak získáme součtem
-        těchto dvou hodnot. Poloosa y je nastavena podle délky vzdálenosti kraje konstrukce
-        od středu, ke které je přidána rezerva 40 mm, aby se zajistilo bezpečné vyhnutí 
-        spojnic pohyblivých os, tedy celkem 280 mm.
+        \begin{figure}[!ht]
+            \centering
+            \raisebox{-\height}{\includegraphics[width=0.43\linewidth]{obrazky/vkb_ok.pdf}}
+            \hspace{1.5cm}
+            \raisebox{-\height}{\includegraphics[width=0.43\linewidth]{obrazky/vkb_nok.pdf}}
+            \caption{Vzdálenost koncových bodů [mm]}
+            \label{fig:vkb_ok}
+        \end{figure}
 
-        Rovnice elipsy tedy bude
-        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 
-        \qquad->\qquad 
-        \frac{(x- 0.75 \ l_{osy})^2}{(0.75 \ l_{osy}+l_{ef})^2}+\frac{(y-0)^2}{(l_{osy}+40)^2}=1$$
+        Sledováním vzdálenosti koncových bodů vznikne okolo koncového bodu oblast 
+        odpovídající kouli, do které se nesmí dostat koncový bod druhého deltabotu.
+        Tato oblast nezohledňuje konstrukci deltabota a jeho spojnice pohyblivých os 
+        s koncovým bodem. Proto se jednoduché sledování vzdálenosti v podstatě nedá použít.
+
+    \subsection{Elipsa okolo koncového bodu}
+        Lepším řešením je udělat okolo koncového bodu oblast, která bude zahrnovat právě i
+        konstrukci. Pro pohled na rovinu \texttt{xy}, která je rovnoběžná se základnou 
+        deltabota i efektorem, je výhodné použití elipsy. Pozice koncového bodu druhého 
+        deltabota nacházející se na elipse a blíže nejsou povoleny.
         
-        kde:
+        Koncový bod deltabota leží na jedné poloose elipsy. Díky tomu lze snadno určit 
+        povolené přiblížení koncových bodů na ose \texttt{x}, na které oba deltaboti leží. 
+        Když si efektor zjednodušíme na kruh s přidanou rezervou o poloměru 50 mm, můžeme 
+        určit minimální vzdálenost koncových bodů. Jelikož se musí počítat s poloměrem 
+        obou efektorů, výsledná vzdálenost musí být minimálně \texttt{100 mm}. 
+        % možná bude chtít upravit
+
+        Aby se zajistilo vyhnutí spojnic konstrukce, musí být elipsa širší v ose kolmé na
+        osu na které leží oba deltaboti, tedy na ose \texttt{y}. Pokud základnu deltabota
+        rovněž zjednodušíme na kruh (kružnice opsaná), lze pro určení poloosy \texttt{b}
+        využít jeho poloměr s přidanou rezervou. Pokud je poloměr kruhu základny 
+        \texttt{240 mm} a rezerva \texttt{40 mm}, poloosa \texttt{b} bude rovna 
+        \texttt{280 mm}.
+
+        Zároveň je nutné určit polohu středu elipsy. Pokud se koncový bod nachází v poloze
+        \texttt{[0, 0] mm} v rovině \texttt{xy}, lze elipsu zjednodušit na kružnice, tedy 
+        poloosy budou stejné. Víme tedy, že poloměr odpovídá poloose \texttt{b}, a od 
+        koncového bodu je posunut pouze v souřadnici \texttt{x}. Ostatní souřadnice jsou 
+        rovny souřadnicím koncového bodu. Střed v ose \texttt{x} tedy určíme:
+
+        $$ S_x = (b-l_{ef}) + R_x $$
+        kde: 
         \begin{itemize}
             \item $S_x$ - souřadnice x středu elipsy
+            \item $b$ - poloosa y elipsy 
+            \item $l_{ef}$ - bezpečná vzdálenost od efektoru
+            \item $R_x$ - pozice koncového bodu deltabota
+        \end{itemize}
+        \hspace{1em}
+        
+        S použitím této rovnice můžeme vypočítat elipsu:
+        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 $$
+        % \quad->\quad 
+        $$ \frac{(x - [(l_{osy}+40-l_{ef})+R_x] )^2}{(l_{osy}+40)^2}+\frac{(y-R_y)^2}{(l_{osy}+40)^2}=1 $$
+        kde:
+        \begin{itemize}
+            % \item $S_x$ - souřadnice x středu elipsy
             \item $S_y$ - souřadnice y středu elipsy
             \item $a$ - poloosa x elipsy
-            \item $b$ - poloosa y elipsy 
+            % \item $b$ - poloosa y elipsy 
             \item $l_{osy}$ - délka osy, kterou zabírá z pohledu ze shora
-            \item $l_{ef}$ - bezpečná vzdálenost od efektoru
+            % \item $l_{ef}$ - bezpečná vzdálenost od efektoru
         \end{itemize}
         \hspace{1em}
-
-        % uprav přímky nejsou potřeba, protože se deltabot za polovinu elipsy fyzicky nedostane
-        Důležitá je především polovina elipsy, která je blíže ke středu soustavy robotů.
-        Prostor za touto  polovinou je pro druhého deltabota rovněž nepřístupný.  
-        Pro prostor za oříznutím elipsy lze metodu zjednodušit pomocí přímky.
-
-        Určení korektní pozice robotů v této oblasti stačí sledovat, zda je rozdíl 
-        polohy y koncových bodů větší než výsledek rovnice přímky.
         
-        $$ |Y| > ax + b $$
-        kde:
-        \begin{itemize}
-            \item $Y$ - rozdíl polohy y koncových bodů
-            \item $a$ a $b$ - vypočítané parametry přímky
-        \end{itemize}
-        \hspace{1em}
-
-        Parametry přímky lze zjednodušeně určit tak, že z konce oříznuté elipsy pokračuje
-        přímka rovnoběžná s osou x. Alternativně lze přímka odvodit z krajních dvou bodů
-        elipsy. Z bodu, kde oříznutá elipsa končí, a jednoho předchozího bodu, se vypočítá 
-        směrnice přímky. Ze známého bodu konce elipsy, od kterého bude následovat přímka, 
-        a vypočítané směrnice lze vypočítat offset přímky.
-        $$ a = \frac{\Delta y}{\Delta x} = \frac{By_e-By_{e-1}}{Bx_e-Bx_{e-1}} $$
-        $$ b = y - ax$$
-        kde:
-        \begin{itemize}
-            \item $a$ - směrnice
-            \item $b$ - offset
-            \item $By_e$ - souřadnice y konce poloviny elipsy
-            \item $By_{e-1}$ - sousedící souřadnice y konce poloviny elipsy
-            \item $Bx_e$ - souřadnice x konce poloviny elipsy
-            \item $Bx_{e-1}$ - sousedící souřadnice x konce poloviny elipsy
-        \end{itemize}
-        \hspace{1em}
-
-
-        Výsledný prostor okolo efektoru v rovine xy lze vidět na obrázku 
-        \ref{fig:limity}, kde povolený prostor je zobrazen zeleně a zakázaný červeně.
+        Výsledný prostor okolo efektoru v rovine xy lze vidět na obrázku \ref{fig:limity},
+        kde povolený prostor je zobrazen zeleně a zakázaný červeně. Prostor za kružnicí
+        pro druhého deltabota je sice nastaven jako povolený, ale skutečný deltavot se 
+        do něj fyzicky nemůže dostat přes zakázanou oblast. Proto není třeba ji řešit.
         
         \begin{figure}[!ht]
             \centering
@@ -143,6 +138,42 @@
             \caption{Limity pro vzdálenost od koncového bodu robotu 2}
             \label{fig:limity}
         \end{figure}
+
+    % \subsection*{Staré PŘEPSAT}
+        %% TAKŽE TOHLE JE SICE MOC PĚKNÝ, ALE CELÝ TO BUDE CHTÍT PŘEPSAT!!!!
+        % uprav přímky nejsou potřeba, protože se deltabot za polovinu elipsy fyzicky nedostane
+        % Důležitá je především polovina elipsy, která je blíže ke středu soustavy robotů.
+        % Prostor za touto  polovinou je pro druhého deltabota rovněž nepřístupný.  
+        % Pro prostor za oříznutím elipsy lze metodu zjednodušit pomocí přímky.
+
+        % Určení korektní pozice robotů v této oblasti stačí sledovat, zda je rozdíl 
+        % polohy y koncových bodů větší než výsledek rovnice přímky.
+        
+        % $$ |Y| > ax + b $$
+        % kde:
+        % \begin{itemize}
+        %    \item $Y$ - rozdíl polohy y koncových bodů
+        %    \item $a$ a $b$ - vypočítané parametry přímky
+        %\end{itemize}
+        %\hspace{1em}
+
+        % Parametry přímky lze zjednodušeně určit tak, že z konce oříznuté elipsy pokračuje
+        % přímka rovnoběžná s osou x. Alternativně lze přímka odvodit z krajních dvou bodů
+        % elipsy. Z bodu, kde oříznutá elipsa končí, a jednoho předchozího bodu, se vypočítá 
+        % směrnice přímky. Ze známého bodu konce elipsy, od kterého bude následovat přímka, 
+        % a vypočítané směrnice lze vypočítat offset přímky.
+        % $$ a = \frac{\Delta y}{\Delta x} = \frac{By_e-By_{e-1}}{Bx_e-Bx_{e-1}} $$
+        % $$ b = y - ax$$
+        % kde:
+        % \begin{itemize}
+        %    \item $a$ - směrnice
+        %    \item $b$ - offset
+        %    \item $By_e$ - souřadnice y konce poloviny elipsy
+        %    \item $By_{e-1}$ - sousedící souřadnice y konce poloviny elipsy
+        %    \item $Bx_e$ - souřadnice x konce poloviny elipsy
+        %    \item $Bx_{e-1}$ - sousedící souřadnice x konce poloviny elipsy
+        % \end{itemize}
+        % \hspace{1em}
         
         % doplnit řešení v ose z
         Velikost elipsy je zároveň ovlivněna pozicí ve směru osy z. Čím výše koncový bod je,
@@ -153,18 +184,7 @@
 
         \newpage
         
-        \begin{figure}[!ht]
-            \centering
-            \includegraphics[width=1\linewidth]{obrazky/vkb_ok.pdf}
-            \caption{Vzdálenost koncových bodů}
-            \label{fig:vkb_ok}
-        \end{figure}
-        \begin{figure}[!ht]
-            \centering
-            \includegraphics[width=1\linewidth]{obrazky/vkb_nok.pdf}
-            \caption{Vzdálenost koncových bodů}
-            \label{fig:vkb_nok}
-        \end{figure}
+        
 
         \FloatBarrier
 
@@ -272,7 +292,7 @@
     lze simulace vytvořit. %Program Scene Viewer, industrialPhysics
     %a Unity 3D.
 
-    \subsubsection{Scene Viewer}
+    \subsection*{Scene Viewer}
         Program Scene Viewer je vytvořený přímo od firmy B\&R, tedy 
         patří do jednoho kompletního řešení podporovaného přímo
         vývojáři a nejlépe zdokumentovaným propojením s virtuálním
@@ -288,7 +308,7 @@
         spuštění je třeba vytvořit certifikát, který se uloží
         na počítači.
 
-    \subsubsection{industrialPhysics}
+    \subsection*{industrialPhysics}
         Pokročilý program, ve kterém lze vytvořit celé virtuální
         pracoviště, je industrialPhysics od firmy machineering.
         
@@ -301,7 +321,7 @@
         Jedná se o placený program, jehož cena je od 300 € měsíčně
         (přibližně 7300 Kč), nebo 1200 € jednorázově (přibližně 29200 Kč).
 
-    \subsubsection{Unity 3D}
+    \subsection*{Unity 3D}
         Velmi populární je herní engine Unity 3D, který lze využít pro 
         simulaci robotických systémů od průmyslové linky až po autonomní 
         řízení automobilů.
