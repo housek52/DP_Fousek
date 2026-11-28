@@ -35,8 +35,8 @@
     % řešit natočení robota vůči druhému
     \section{Vzájemné postavení robotů}
         Prvním problémem, nad kterým je potřeba uvažovat, je vzájemné postavení deltabotů 
-        vedle sebe. Jelikož práce navazuje na předchozí znalosti, je využit v této 
-        práci pro lepší představu použit stejný model robotického systému, který
+        vedle sebe. Jelikož práce navazuje na předchozí znalosti, je v této 
+        práci pro lepší představu použit stejný model robotického systému, jako
         navrhl Oliver Drga \cite{drga}, a ve výchozím skriptu byl již nastaven.
         
         \begin{figure}[!ht]
@@ -49,18 +49,19 @@
         Z konstrukce vyplývá, díky omezení pohybu použitých kloubů a konstrukce rámu, 
         jediná možná pozice těchto dvou robotů tak, aby mohli zasahovat do stejného
         pracovního prostoru. Jeden robot musí být otočený o $180^\circ$. Při předpokladu, 
-        že budou roboti vůči sobě posunutí na ose x, tak pohyblivé osy ležící na ose x 
-        budou směřovat od sebe (od středu uspořádaných robotů), jak lze vidět na obrázku
-        \ref{fig:boti_v_prostoru}.
+        že budou roboti vůči sobě posunutí na ose \texttt{x}, tak pohyblivé osy ležící na 
+        ose \texttt{x} budou směřovat od sebe (od středu uspořádaných robotů), jak lze 
+        vidět na obrázku \ref{fig:boti_v_prostoru}.
 
         Roboti musí být tedy v rozumné vzdálenosti od sebe. V práci je použit posun středu
-        robota o 400 mm, což zhruba odpovídá vzdálenosti 159 mm od konce pohyblivé osy.
+        robota o \texttt{400 mm}, což zhruba odpovídá vzdálenosti 159 mm od konce pohyblivé
+        osy.
         % Podívat se na model Olivera zda je to dost pro konstrukci :)
 
     \section{Vzdálenost koncových bodů}
         První a principiálně nejjednodušší metoda je prosté sledování vzdálenosti koncových
-        bodů. Pohyb robotů je v tomto případě neomezený dokud se koncové nepřiblíží více
-        než je minimální povolená vzdálenost. 
+        bodů. Pohyb robotů je v tomto případě neomezený, dokud se koncové body nepřiblíží 
+        více, než je minimální povolená vzdálenost. 
         
         \begin{figure}[!ht]
             \centering
@@ -77,8 +78,8 @@
         s koncovým bodem. Proto se jednoduché sledování vzdálenosti v podstatě nedá použít.
 
     \subsection{Elipsa okolo koncového bodu}
-        Lepším řešením je udělat okolo koncového bodu oblast, která bude zahrnovat právě i
-        konstrukci. Pro pohled na rovinu \texttt{xy}, která je rovnoběžná se základnou 
+        Lepším řešením je vytvořit okolo koncového bodu oblast, která bude zahrnovat právě 
+        i konstrukci. Pro pohled na rovinu \texttt{xy}, která je rovnoběžná se základnou 
         deltabota i efektorem, je výhodné použití elipsy. Pozice koncového bodu druhého 
         deltabota nacházející se na elipse a blíže nejsou povoleny.
         
@@ -90,47 +91,60 @@
         % možná bude chtít upravit
 
         Aby se zajistilo vyhnutí spojnic konstrukce, musí být elipsa širší v ose kolmé na
-        osu na které leží oba deltaboti, tedy na ose \texttt{y}. Pokud základnu deltabota
+        osu, na které leží oba deltaboti, tedy na ose \texttt{y}. Pokud základnu deltabota
         rovněž zjednodušíme na kruh (kružnice opsaná), lze pro určení poloosy \texttt{b}
         využít jeho poloměr s přidanou rezervou. Pokud je poloměr kruhu základny 
         \texttt{240 mm} a rezerva \texttt{40 mm}, poloosa \texttt{b} bude rovna 
         \texttt{280 mm}.
 
-        Zároveň je nutné určit polohu středu elipsy. Pokud se koncový bod nachází v poloze
-        \texttt{[0, 0] mm} v rovině \texttt{xy}, lze elipsu zjednodušit na kružnice, tedy 
-        poloosy budou stejné. Víme tedy, že poloměr odpovídá poloose \texttt{b}, a od 
-        koncového bodu je posunut pouze v souřadnici \texttt{x}. Ostatní souřadnice jsou 
-        rovny souřadnicím koncového bodu. Střed v ose \texttt{x} tedy určíme:
+        Zároveň je nutné určit polohu středu elipsy. Pokud se koncový bod nachází v~poloze
+        \texttt{[0, 0] mm} v rovině \texttt{xy}, lze elipsu zjednodušit na kružnici, tedy 
+        poloosy budou stejné. Víme tedy, že poloměr odpovídá poloose \texttt{b}, a tedy
+        pro kružnici i poloose \texttt{a}. Koncový bod je posunut od středu pouze v 
+        souřadnici \texttt{x}. Ostatní souřadnice jsou rovny souřadnicím koncového bodu. 
+        Střed v ose \texttt{x} tedy určíme:
 
-        $$ S_x = (b-l_{ef}) + R_x $$
+        \begin{equation}
+            S_x = (a-l_{ef}) + R_x 
+            \label{eq:stred_elipsy_PB}
+        \end{equation}
         kde: 
         \begin{itemize}
-            \item $S_x$ - souřadnice x středu elipsy
-            \item $b$ - poloosa y elipsy 
-            \item $l_{ef}$ - bezpečná vzdálenost od efektoru
-            \item $R_x$ - pozice koncového bodu deltabota
+            \item []$S_x$ - souřadnice \texttt{x} středu elipsy
+            \item []$a$ - poloosa \texttt{x} elipsy
+            \item []$l_{ef}$ - bezpečná vzdálenost od efektoru
+            \item []$R_x$ - pozice \texttt{x} koncového bodu deltabota
         \end{itemize}
         \hspace{1em}
         
         S použitím této rovnice můžeme vypočítat elipsu:
-        $$ \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1 $$
+        \begin{equation}
+            \frac{(x-S_x)^2}{a^2}+\frac{(y-S_y)^2}{b^2}=1
+            \label{eq:obecna_elipsa}
+        \end{equation}
         % \quad->\quad 
-        $$ \frac{(x - [(l_{osy}+40-l_{ef})+R_x] )^2}{(l_{osy}+40)^2}+\frac{(y-R_y)^2}{(l_{osy}+40)^2}=1 $$
-        kde:
+        \begin{equation}
+            \frac{(x - [(l_{osy}+40-l_{ef})+R_x] )^2}{(l_{osy}+40)^2}+\frac{(y-R_y)^2}{(l_{osy}+40)^2}=1
+            \label{eq:elipsa_pracovni_bod}
+        \end{equation}
+            kde:
         \begin{itemize}
             % \item $S_x$ - souřadnice x středu elipsy
-            \item $S_y$ - souřadnice y středu elipsy
-            \item $a$ - poloosa x elipsy
+            \item []$S_y$ - souřadnice \texttt{y} středu elipsy
+            \item []$b$ - poloosa \texttt{y} elipsy 
             % \item $b$ - poloosa y elipsy 
-            \item $l_{osy}$ - délka osy, kterou zabírá z pohledu ze shora
+            \item []$l_{osy}$ - poloměr kruhu základny deltabota 
+            \item []$R_y$ - pozice \texttt{y} koncového bodu deltabota
             % \item $l_{ef}$ - bezpečná vzdálenost od efektoru
         \end{itemize}
         \hspace{1em}
         
-        Výsledný prostor okolo efektoru v rovine xy lze vidět na obrázku \ref{fig:limity},
-        kde povolený prostor je zobrazen zeleně a zakázaný červeně. Prostor za kružnicí
-        pro druhého deltabota je sice nastaven jako povolený, ale skutečný deltavot se 
-        do něj fyzicky nemůže dostat přes zakázanou oblast. Proto není třeba ji řešit.
+        Výsledný prostor okolo efektoru v rovině \texttt{xy} lze vidět na obrázku 
+        \ref{fig:limity}, kde povolený prostor je zobrazen zeleně a zakázaný červeně. 
+        Prostor za kružnicí pro druhého deltabota je sice nastaven jako povolený, ale 
+        skutečný deltabot se do něj fyzicky nemůže dostat přes zakázanou oblast. Proto 
+        není třeba tento prostor řešit.
+        % SNAD
         
         \begin{figure}[!ht]
             \centering
@@ -176,21 +190,110 @@
         % \hspace{1em}
         
         % doplnit řešení v ose z
-        Velikost elipsy je zároveň ovlivněna pozicí ve směru osy z. Čím výše koncový bod je,
-        tím větší musí být bezpečná oblast okolo něj.
-        % dle výšky upravovat poloosu b elipsy
-        % posunutí elipsy po spojnici: těžiště jezdců -> epicentrum v koncovém bodě
+        Toto však platí jenom pro jednu pozici na ose \texttt{z} a pokud je pozice 
+        koncového bodu ve středu souřadného systému deltabota v rovině \texttt{xy}. Při 
+        pohybu se mění úhel spojnic konstrukce, a je tedy nutné měnit velikost poloosy 
+        \texttt{b}. 
+        
+        Pro změnu hodnoty poloos při změně polohy v souřadnici \texttt{x} a \texttt{y} lze 
+        využít sklon spojnice konstrukce ke koncovému bodu. Proto je třeba počítat i s
+        polohou jezdců. Pro známou polohu koncového bodu zjistíme polohu jednotlivých 
+        jezdců pomocí inverzní kinematiky. Protože pohyblivá osa \texttt{U} je směrem ke
+        středu elipsy, nemusíme s ní počítat, a pro výpočet jsou tedy důležité pouze 
+        osy \texttt{V} a  \texttt{W}.
+
+        Z těchto dvou pohyblivých os je třeba určit tu, která má větší rozdíl od koncového 
+        bodu v ose \texttt{x} pro výpočet poloosy \texttt{a}, a v ose \texttt{y} pro 
+        výpočet poloosy \texttt{b}. Ty si označíme jako $\Delta a$ pro změnu \texttt{a},
+        a $\Delta b$ pro změnu \texttt{b} Samotná směrnice ale neurčí, jak moc se poloosa 
+        změní. To lze zjistit z posunu v ose \texttt{z}.
+
+        Nejdříve je vhodné určit přímku, po které se bude elipsa posouvat. Tu určíme podle 
+        koncového bodu a těžiště trojúhelníku, který je vytvořen jezdci pohyblivých os.
+        Střed se bude pohybovat po rovnoběžné přímce posunuté v souřadnici \texttt{x}
+        dle výpočtu z pracovního bodu pomocí vzorce (\ref{eq:stred_elipsy_PB}).
+
+        % výpočet těžiště
+        Pro výpočet těžiště je nejprve třeba vypočítat střední body mezi jednotlivými 
+        jezdci. K bodu, od kterého vycházíme, připočteme polovinu délky vzdálenosti.
+        Pro souřadnici \texttt{x} středů pak vzorce jsou:
+        \begin{equation}
+            S_{x1} = U_x + \frac{V_x - U_x}{2}, \quad S_{x2} = V_x + \frac{W_x - V_x}{2},
+            \quad S_{x3} = W_x + \frac{U_x - W_x}{2}
+            \label{eq:stredy_teziste}
+        \end{equation}
+        kde:
+        \begin{itemize}
+            \item []$S_x$ - jednotlivé středy mezi jezdci v ose \texttt{x}
+            \item []$U_x,V_x,W_x$ - souřadnice \texttt{x} jednotlivých jezdců
+        \end{itemize}
+        Dále je nutné znát celkovou vzdálenost mezi jednotlivými jezdci. Pro vzdálenost
+        mezi jezdci \texttt{U} a \texttt{V} je vzorec:
+        \begin{equation}
+            l_1 = \sqrt{(V_x - U_x)^2 + (V_y - U_y)^2 + (V_z - U_z)^2}
+            \label{eq:vzdalenost_jezdcu}
+        \end{equation}
+        Z těchto hodnot lze již dopočítat jednotlivé souřadnice těžiště. Pro souřadnici
+        \texttt{x} je výpočet následovný:
+        \begin{equation}
+            T_x = \frac{S_{x1}\ l_1 + S_{x2}\ l_2 + S_{x3}\ l_3}{l_1 + l_2 + l_3}
+            \label{eq:teziste_x}
+        \end{equation}
+
+        % jednotkove vektory
+        Z vypočítaného těžiště a polohy koncového bodu je třeba určit změnu v 
+        jednotlivých osách. Proto nejdříve určíme rozdíl souřadnice koncového bodu od 
+        souřadnice těžiště. Pro výpočet, jak se elipsa mění na základě výšky, je třeba
+        určit krok, s jakým se bude měnit. Proto lze využít výpočet jednotkových vektorů.
+        Tedy jednotlivé směrnice je třeba vydělit vzdáleností těžiště od koncového bodu.
+        \begin{equation}
+            \frac{\Delta x\ \vec{i} + \Delta y\ \vec{j} + \Delta z\ \vec{k}}{|RT|}
+            \label{eq:jednotkove_vektroy}
+        \end{equation}
+        kde:
+        \begin{itemize}
+            \item []dx, dy, dz - směrnice jednotlivých os mezi koncovým bodem a těžištěm
+            \item []|RT| - vzdálenost mezi koncovým bodem a těžištěm
+        \end{itemize}
+        \vspace{1em}
+
+        % násobit jednotkove vektory rozdilem v ose z koncových bodů
+        % a zároveň úprava vzorce pro elipsu (+da, +db)
+        Ze známého kroku a rozdílu polohy \texttt{z} koncových bodů lze následně určit
+        posun středu i ovlivnění poloos elipsy. Směrnice naklonění spojnic $\Delta a$
+        a $\Delta b$ je třeba přepočítat na velikost odpovídající velikosti kroků 
+        jednotkových vektorů. Vzorec pro~elipsu~(\ref{eq:obecna_elipsa}) lze pak 
+        upravit:
+        \begin{equation}
+            \frac{[x - (S_x + \Delta x_{\vec{i}}\ dz)]^2}{(a + \Delta a_{|RT|}\ dz)^2} + \frac{[y - (S_y + \Delta y_{\vec{j}}\ dz)]^2}{(b + \Delta b_{|RT|}\ dz)^2} = 1
+            \label{eq:elipsa_final}
+        \end{equation}
+        kde:
+        \begin{itemize}
+            \item []$S_x$, $S_y$ - střed elipsy s ohledem na pozici koncového bodu
+            \item []$\Delta x_{\vec{i}}$, $\Delta y_{\vec{j}}$ - velikosti jednotkových
+                 vektorů \texttt{x} a \texttt{y} ze vzorce (\ref{eq:jednotkove_vektroy})
+            \item []$a$, $b$ - poloosy elipsy vypočtené ve vzorci 
+                (\ref{eq:elipsa_pracovni_bod})
+            \item []$\Delta a_{|RT|}$, $\Delta b_{|RT|}$ - normované naklonění spojnic 
+                koncového bodu ($\Delta a_{|RT|}=\frac{\Delta a}{|RT|}$)
+            \item []$dz$ - rozdíl v ose \texttt{z} mezi koncovými body
+        \end{itemize}
+
+        % řešit velikost kružnice dle výšky v z????
+        % prohození výpočtu elips pro nižší koncový bod
 
 
-        \newpage
+        %\newpage
         
         
 
         \FloatBarrier
 
-    \section{Vzdálenost koncových bodů s vektorem pohybu}
+    \section{Rozdělení prostoru na kvadranty}
 
-    \section{Rozdělení prostoru na kvadráty}
+    \section{Predikce pohybu}
+    % \section{Vzdálenost koncových bodů s vektorem pohybu}
 
 
 
@@ -207,7 +310,7 @@
     První změnou, které nové PLC přináší, je rychlejší takt procesoru. Při vybrání časování
     podle rozhraní EPL/X2X - IF3 dostaneme poloviční čas systémového tiku, a proto si
     můžeme dovolit dvakrát rychlejší vykonávání cyklických úloh. Nejrychlejší cyklická úloha
-    se tedy vykonává s periodou 2 ms.
+    se tedy vykonává s periodou \texttt{2 ms}.
 
     \section{Nové HMI}
     % HMI template
@@ -215,14 +318,15 @@
     obrazovky na panel HMI. Díky tomu je již vytvořené rozložení stránek, které obsahuje 
     hlavičku s logem, panel s tlačítky pro přepínání zobrazené stránky a samotný obsah 
     jednotlivých stránek. Navíc obsahuje tlačítko pro změnu a přihlášení uživatele.
-    Pro účely funkčnosti, který odpovídá stavu popsanému v mé bakalářské práci, je 
+    Pro účely funkčnosti, která odpovídá stavu popsanému v mé bakalářské práci, je 
     dostačující pouze jedna stránka obrazovky. Potřebné prvky jsou numerické ukazatele
-    pro polohu x, y, z v prostoru a u, v, w pro polohu jednotlivých os, menu pro výběr 
-    pohybového programu a tlačítka a signalizace pro vykonávání pohybu.
+    pro polohu \texttt{X}, \texttt{Y}, \texttt{Z} v prostoru a \texttt{U}, \texttt{V}, 
+    \texttt{W} pro polohu jednotlivých os, menu pro výběr pohybového programu a tlačítka
+    a signalizace pro vykonávání pohybu.
       
     \begin{figure}[!ht]
         \centering
-        \includegraphics[width=1\linewidth]{obrazky/HMI.png}
+        \includegraphics[width=0.98\linewidth]{obrazky/HMI.png}
         \caption{Nové HMI vytvořené pomocí šablony}
         \label{fig:hmi}
     \end{figure}
@@ -278,7 +382,7 @@
     Během nastavování programu PLC se objevil problém. Aktuální verze v době vytváření
     projektu Automation Runtime 6.8 obsahuje chybu, díky které se po startu programu
     správně nespustí pohybový model Deltabotu. Proto se musí použít starší verze 
-    Automation Runtime 6.7. O chybě v novější verzi vývojáři ví a v následující verzi 
+    Automation Runtime 6.7. O chybě v novější verzi vývojáři vědí a v následující verzi 
     má být opravena.
 
 
@@ -288,7 +392,7 @@
 
 \chapter{Simulované prostředí}
     Důležitou částí semestrální práce je vytvoření simulovaného
-    prostředí pracoviště robotů. Jsou tři hlavní programy v kterých 
+    prostředí pracoviště robotů. Jsou tři hlavní programy, ve kterých 
     lze simulace vytvořit. %Program Scene Viewer, industrialPhysics
     %a Unity 3D.
 
@@ -331,7 +435,7 @@
         buď balíčky přímo pro jednotlivé výrobce PLC, jako je třeba Siemens, 
         nebo pro univerzální propojení pomocí např. OPC UA a Modbus.
 
-        Pro osobní a nebo malé týmy je Unity 3D k dispozici zdarma. Pro využití
+        Pro jednotlivce anebo malé týmy je Unity 3D k dispozici zdarma. Pro využití
         v průmyslu ve firmě je pak cena asi 383 € (přibližně 9300 Kč).
     
     \section{Vytvoření simulace}
